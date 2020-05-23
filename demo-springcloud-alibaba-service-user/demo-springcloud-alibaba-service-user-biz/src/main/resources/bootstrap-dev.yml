@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: demo-springcloud-alibaba-service-user
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848 # 注册中心地址
+        namespace: 172d517e-d429-48c3-a222-59435534593e
+        group: group-0
+      config:
+        server-addr: localhost:8848
+        namespace: 172d517e-d429-48c3-a222-59435534593e
+        group: demo-springcloud-alibaba-service-user
+        file-extension: yml
+#        shared-dataids: mysql.yml,redis.yml,printlog.yml,es.yml
