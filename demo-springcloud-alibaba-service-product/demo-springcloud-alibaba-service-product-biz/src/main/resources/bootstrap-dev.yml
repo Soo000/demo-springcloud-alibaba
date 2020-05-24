@@ -10,6 +10,6 @@ spring:
       config:
         server-addr: localhost:8848
         namespace: 172d517e-d429-48c3-a222-59435534593e
-        group: demo-springcloud-alibaba-service-product
+        group: ${spring.application.name}
         file-extension: yml
 #        shared-dataids: mysql.yml,redis.yml,printlog.yml,es.yml
