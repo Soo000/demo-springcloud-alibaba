@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 
 /**
  * SpringSecurity 安全配置类
- * @EnableWebSecurity 开启安全配置
+ * 注解@EnableWebSecurity开启安全配置
  *
  * @author Ke Wang
  */

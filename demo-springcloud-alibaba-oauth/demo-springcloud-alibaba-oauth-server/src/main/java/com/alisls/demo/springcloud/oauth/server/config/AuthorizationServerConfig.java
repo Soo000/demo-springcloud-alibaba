@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
@@ -18,7 +19,7 @@ import javax.sql.DataSource;
 
 /**
  * 认证服务器配置类
- * @EnableAuthorizationServer 注解开启了认证服务器功能
+ * 注解@EnableAuthorizationServer开启了认证服务器功能
  *
  * @author Ke Wang
  */
@@ -87,6 +88,17 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         // 设置用jdbc管理客户端
         clients.withClientDetails(jdbcClientDetailsService());
+    }
+
+    /**
+     * 令牌端点的安全配置
+     * @param security
+     * @throws Exception
+     */
+    @Override
+    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+        // 设置检查令牌端点认证后可用
+        security.checkTokenAccess("isAuthenticated()");
     }
 
 }
