@@ -14,6 +14,8 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
 import javax.sql.DataSource;
 
@@ -39,17 +41,17 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private DataSource dataSource;
 
+    /**
+     * Token存储器
+     */
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private TokenStore tokenStore;
 
     /**
-     * 授权码管理策略
-     * 向容器注入JdbcAuthorizationCodeServices，用来用Jdbc管理授权码
+     * 认证管理类
      */
-    @Bean
-    public AuthorizationCodeServices jdbcAuthorizationCodeServices() {
-        return new JdbcAuthorizationCodeServices(dataSource);
-    }
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     /**
      * 客户端管理策略
@@ -61,18 +63,21 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     }
 
     /**
-     * 配置认证服务器端点
-     *
-     * @param endpoints
-     * @throws Exception
+     * 授权码管理策略
+     * 向容器注入JdbcAuthorizationCodeServices，用来用Jdbc管理授权码
      */
-    @Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        // 设置授权码管理策略为jdbc, 授权码会保存在表oauth_code中（如果授权码被使用，对应的数据就会被删除）
-        endpoints.authorizationCodeServices(jdbcAuthorizationCodeServices());
+    @Bean
+    public AuthorizationCodeServices jdbcAuthorizationCodeServices() {
+        return new JdbcAuthorizationCodeServices(dataSource);
+    }
 
-        // 密码模式需要向端点配置 authenticationManager
-        endpoints.authenticationManager(authenticationManager);
+    /**
+     * 令牌管理策略
+     * 配置Jdbc的TokenStore
+     */
+    @Bean
+    public TokenStore tokenStore() {
+        return new JdbcTokenStore(dataSource);
     }
 
     /**
@@ -88,6 +93,28 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         // 设置用jdbc管理客户端
         clients.withClientDetails(jdbcClientDetailsService());
+    }
+
+    /**
+     * 配置认证服务器端点
+     *
+     * @param endpoints
+     * @throws Exception
+     */
+    @Override
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+        // 设置授权码管理策略为jdbc, 授权码会保存在表oauth_code中（如果授权码被使用，对应的数据就会被删除）
+        endpoints.authorizationCodeServices(jdbcAuthorizationCodeServices());
+
+        // 密码模式需要向端点配置 authenticationManager
+        endpoints.authenticationManager(authenticationManager);
+
+        /*
+         * 设置Token存储器TokenStore
+         * 采用JdbcTokenStore方式存储token, token默认存储在表oauth_access_token中
+         * 采用RedisTokenStore方式存储token，token默认存储Key"待补充"中
+         */
+        endpoints.tokenStore(tokenStore);
     }
 
     /**

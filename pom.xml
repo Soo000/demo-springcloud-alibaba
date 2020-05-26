@@ -60,6 +60,7 @@
         <module>demo-springcloud-alibaba-service-order</module>
         <module>demo-springcloud-alibaba-service-product</module>
         <module>demo-springcloud-alibaba-oauth</module>
+        <module>demo-springcloud-alibaba-gateway</module>
     </modules>
 
 </project>

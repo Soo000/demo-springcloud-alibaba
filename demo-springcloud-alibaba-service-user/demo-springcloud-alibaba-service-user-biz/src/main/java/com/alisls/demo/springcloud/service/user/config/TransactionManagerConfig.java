@@ -73,7 +73,7 @@ public class TransactionManagerConfig {
 
     @Bean(name = "txAdviceAdvisor")
     public Advisor txAdviceAdvisor() {
-        logger.info("===============================创建txAdviceAdvisor===================================");
+        logger.info("创建txAdviceAdvisor");
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
         pointcut.setExpression(AOP_POINTCUT_EXPRESSION);
         return new DefaultPointcutAdvisor(pointcut, txAdvice());
