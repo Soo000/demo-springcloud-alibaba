@@ -7,17 +7,17 @@ import lombok.ToString;
 import java.io.Serializable;
 
 /**
- * ProductDTO
+ * SpuDTO
  *
  * @author Ke Wang
  */
 @Getter
 @Setter
 @ToString
-public class ProductDTO implements Serializable {
+public class SpuDTO implements Serializable {
 
     private Long id;
 
-    private String productName;
+    private String spuName;
 
 }

@@ -1,6 +1,7 @@
 package com.alisls.demo.springcloud.service.product.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,6 +27,24 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     private static final String RESOURCE_ID = "demo-springcloud-service-all";
 
+    /**
+     * 客户端标识
+     */
+    @Value("${oauth.client-id}")
+    private String clientId;
+
+    /**
+     * 客户端密码
+     */
+    @Value("${oauth.secret}")
+    private String secret;
+
+    /**
+     * Token验证地址
+     */
+    @Value("${oauth.check-token-url}")
+    private String checkTokenUrl;
+
     @Autowired
     private TokenStore tokenStore;
 
@@ -37,23 +56,21 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
          * 认证服务会认证客户端有没有访问这个资源ID的权限
          */
         resources.resourceId(RESOURCE_ID)
-//            .tokenServices(tokenService());
-            // 设置tokenStore, 使用JWT token进行校验
-            .tokenStore(tokenStore);
+            .tokenServices(tokenService());
     }
 
     /**
      * 建一个远程TokenService（即连接到认证服务器的进行token校验的服务）
      * @return ResourceServerTokenServices
      */
-    /*public ResourceServerTokenServices tokenService() {
+    public ResourceServerTokenServices tokenService() {
         // 创建一个远程TokenService（即连接到认证服务器的进行token校验的服务），需求设置该端点认证后可访问
         RemoteTokenServices tokenService = new RemoteTokenServices();
-        tokenService.setCheckTokenEndpointUrl("http://localhost:16001/auth/oauth/check_token");
-        tokenService.setClientId("www.alisls.com-pc");
-        tokenService.setClientSecret("123456");
+        tokenService.setCheckTokenEndpointUrl(checkTokenUrl);
+        tokenService.setClientId(clientId);
+        tokenService.setClientSecret(secret);
         return tokenService;
-    }*/
+    }
 
     /**
      * 控制令牌范围权限和授权规则

@@ -23,11 +23,11 @@ public class ProductController {
      */
     @GetMapping("/listProducts")
     //@PreAuthorize("hasAuthority('product:listProducts')")
-    public ResponseEntity<Result> listProducts() {
+    public Result listProducts() {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setId(1000L);
         productDTO.setProductName("WK的商品");
-        return ResponseEntity.ok(DataResult.ofSuccess(productDTO));
+        return DataResult.ofSuccess(productDTO);
     }
 
 }
