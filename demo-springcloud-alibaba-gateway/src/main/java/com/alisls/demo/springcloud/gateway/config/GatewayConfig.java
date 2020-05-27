@@ -1,5 +1,7 @@
 package com.alisls.demo.springcloud.gateway.config;
 
+import com.alisls.demo.springcloud.gateway.filter.CustomFilter;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -13,10 +15,22 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GatewayConfig {
 
+    /**
+     * 自定义全局过滤器
+     */
+    @Bean
+    public GlobalFilter customFilter() {
+        return new CustomFilter();
+    }
+
+    /**
+     * 代码配置路由
+     * 注意：通过代码配置路由，配置文件中配置的路由需要屏蔽掉
+     */
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("path_route", r -> r.path("/service-product").uri("http://localhost:10051/"))
+                .route("path_route", r -> r.path("/csdn").uri("https://blog.csdn.net"))
                 .build();
     }
 
